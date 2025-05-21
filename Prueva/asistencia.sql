@@ -1,5 +1,7 @@
-CREATE DATABASE asistencia_db;
+-- Eliminar la base de datos existente si es necesario
+DROP DATABASE IF EXISTS asistencia_db;
 
+CREATE DATABASE asistencia_db;
 USE asistencia_db;
 
 CREATE TABLE usuarios (
@@ -7,6 +9,7 @@ CREATE TABLE usuarios (
     nombre VARCHAR(100) NOT NULL,
     usuario VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    correo VARCHAR(100) UNIQUE,  -- Nuevo campo añadido
     rol ENUM('admin', 'usuario') NOT NULL DEFAULT 'usuario'
 );
 
@@ -18,12 +21,12 @@ CREATE TABLE asistencias (
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
--- Insertar usuarios de prueba (contraseñas son "password123" hasheadas)
-INSERT INTO usuarios (nombre, usuario, password, rol) VALUES
-('Ana Pérez', 'ana', '123', 'usuario'),
-('Carlos Gómez', 'carlos', '123', 'usuario'),
-('Lucía Torres', 'admin', '123', 'admin'),
-('Mario Rodríguez', 'mario', '123', 'usuario');
+-- Insertar usuarios de prueba con contraseñas hasheadas correctamente
+INSERT INTO usuarios (nombre, usuario, password, correo, rol) VALUES
+('Ana Pérez', 'ana', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ana@example.com', 'usuario'),
+('Carlos Gómez', 'carlos', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'carlos@example.com', 'usuario'),
+('Lucía Torres', 'admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@example.com', 'admin'),
+('Mario Rodríguez', 'mario', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'mario@example.com', 'usuario');
 
 -- Insertar asistencias de prueba
 INSERT INTO asistencias (usuario_id, fecha, hora) VALUES

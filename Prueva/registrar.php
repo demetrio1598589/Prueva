@@ -21,9 +21,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $sql_insert = "INSERT INTO asistencias (usuario_id, fecha, hora) VALUES (?, ?, ?)";
         $stmt_insert = $conn->prepare($sql_insert);
         $stmt_insert->bind_param("iss", $usuario_id, $fecha, $hora);
-        $stmt_insert->execute();
-
-        echo "<p>✅ Asistencia registrada correctamente.</p>";
+        
+        if ($stmt_insert->execute()) {
+            echo "<p>✅ Asistencia registrada correctamente.</p>";
+        } else {
+            echo "<p>❌ Error al registrar asistencia.</p>";
+        }
     } else {
         echo "<p>❌ Correo no registrado.</p>";
     }

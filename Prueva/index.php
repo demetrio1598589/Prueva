@@ -20,6 +20,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registrar_asistencia']
     $mensaje = "Asistencia registrada correctamente";
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registrar_asistencia_admin']) && $_SESSION['rol'] == 'admin') {
+    $usuario_id = $_POST['usuario_id'];
+    $fecha = date("Y-m-d");
+    $hora = date("H:i:s");
+
+    $sql = "INSERT INTO asistencias (usuario_id, fecha, hora) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iss", $usuario_id, $fecha, $hora);
+    $stmt->execute();
+    $mensaje_admin = "Asistencia registrada correctamente para el usuario seleccionado";
+}
+
 // Obtener historial de asistencias
 if ($_SESSION['rol'] == 'admin') {
     $sql_historial = "SELECT u.nombre, a.fecha, a.hora 
@@ -41,10 +53,31 @@ $stmt_historial->execute();
 $historial = $stmt_historial->get_result();
 ?>
 
+<?php if ($_SESSION['rol'] == 'admin'): ?>
+<div class="panel">
+    <h3>Registrar Asistencia (Admin)</h3>
+    <form method="POST" action="">
+        <select name="usuario_id" required>
+            <?php 
+            $sql_usuarios = "SELECT id, nombre FROM usuarios";
+            $result_usuarios = $conn->query($sql_usuarios);
+            while ($usuario = $result_usuarios->fetch_assoc()): ?>
+                <option value="<?php echo $usuario['id']; ?>"><?php echo $usuario['nombre']; ?></option>
+            <?php endwhile; ?>
+        </select>
+        <button type="submit" name="registrar_asistencia_admin" class="btn">Registrar Asistencia</button>
+    </form>
+    <?php if (isset($mensaje_admin)): ?>
+        <p class="success"><?php echo $mensaje_admin; ?></p>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
+
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sistema de Asistencia</title>
+    <title>Sistema de Asistencia de prueva</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
         .header { background-color: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; }

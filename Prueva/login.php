@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['nombre'] = $user['nombre'];
             $_SESSION['rol'] = $user['rol'];
-            header("Location: index.php");
+            header("Location: inicio.php");
             exit();
         } else {
             $error = "Usuario o contraseña incorrectos";
